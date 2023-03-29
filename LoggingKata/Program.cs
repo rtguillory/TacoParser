@@ -18,11 +18,25 @@ namespace LoggingKata
             logger.LogInfo("Log initialized");
 
             // use File.ReadAllLines(path) to grab all the lines from your csv file
-            // Log and error if you get 0 lines and a warning if you get 1 line
+            // Log an error if you get 0 lines and a warning if you get 1 line
             var lines = File.ReadAllLines(csvPath);
-
-            logger.LogInfo($"Lines: {lines[0]}");
-
+            
+            //logger.LogInfo($"Lines: {lines[0]}");
+            
+            if (lines.Length == 0)
+            {
+                logger.LogError(csvPath, null);
+            }
+            else if(lines.Length == 1)
+            {
+                logger.LogWarning("1 record found");
+                logger.LogInfo($"Lines: {lines[0]}");
+            }
+            else
+            {
+                logger.LogInfo($"Lines: {lines[0]}");
+            }
+            
             // Create a new instance of your TacoParser class
             var parser = new TacoParser();
 

@@ -20,21 +20,23 @@ namespace LoggingKata
             // use File.ReadAllLines(path) to grab all the lines from your csv file
             // Log an error if you get 0 lines and a warning if you get 1 line
             var lines = File.ReadAllLines(csvPath);
-            
+
             //logger.LogInfo($"Lines: {lines[0]}");
-            
+
             if (lines.Length == 0)
             {
                 logger.LogError("file has no input");
+                return;
             }
-            else if(lines.Length == 1)
+            if (lines.Length == 1)
             {
                 logger.LogWarning("only 1 record found");
+                return;
             }
-            //question:  won't these return outofbounds error if no records found??
+
             logger.LogInfo($"Lines: {lines[0]}");
-            
-            
+
+
             // Create a new instance of your TacoParser class
             var parser = new TacoParser();
 
@@ -67,17 +69,17 @@ namespace LoggingKata
 
             // Once you've looped through everything, you've found the two Taco Bells farthest away from each other.
 
-            for (int i = 0; i < locations.Length-1; i++)
+            for (int i = 0; i < locations.Length - 1; i++)
             {
                 var locationA = locations[i];
 
-                var coordinatesA = new GeoCoordinate 
-                                        {
-                                            Latitude = locationA.Location.Latitude, 
-                                            Longitude = locationA.Location.Longitude 
-                                        };
+                var coordinatesA = new GeoCoordinate
+                {
+                    Latitude = locationA.Location.Latitude,
+                    Longitude = locationA.Location.Longitude
+                };
 
-                for(int j = i + 1; j < locations.Length; j++)
+                for (int j = i + 1; j < locations.Length; j++)
                 {
                     var locationB = locations[j];
 
@@ -87,7 +89,7 @@ namespace LoggingKata
                         Longitude = locationB.Location.Longitude
                     };
 
-                    
+
                     if (coordinatesA.GetDistanceTo(coordinatesB) > distance)
                     {
                         distance = coordinatesA.GetDistanceTo(coordinatesB);

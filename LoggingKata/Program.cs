@@ -25,17 +25,15 @@ namespace LoggingKata
             
             if (lines.Length == 0)
             {
-                logger.LogError(csvPath, null);
+                logger.LogError("file has no input");
             }
             else if(lines.Length == 1)
             {
-                logger.LogWarning("1 record found");
-                logger.LogInfo($"Lines: {lines[0]}");
+                logger.LogWarning("only 1 record found");
             }
-            else
-            {
-                logger.LogInfo($"Lines: {lines[0]}");
-            }
+            //question:  won't these return outofbounds error if no records found??
+            logger.LogInfo($"Lines: {lines[0]}");
+            
             
             // Create a new instance of your TacoParser class
             var parser = new TacoParser();
@@ -49,6 +47,9 @@ namespace LoggingKata
 
             // TODO: Create two `ITrackable` variables with initial values of `null`. These will be used to store your two taco bells that are the farthest from each other.
             // Create a `double` variable to store the distance
+            ITrackable tacoBell1 = null;
+            ITrackable tacoBell2 = null;
+            double distance = 0;
 
             // Include the Geolocation toolbox, so you can compare locations: `using GeoCoordinatePortable;`
 
@@ -66,8 +67,36 @@ namespace LoggingKata
 
             // Once you've looped through everything, you've found the two Taco Bells farthest away from each other.
 
+            for (int i = 0; i < locations.Length-1; i++)
+            {
+                var locationA = locations[i];
 
-            
+                var coordinatesA = new GeoCoordinate 
+                                        {
+                                            Latitude = locationA.Location.Latitude, 
+                                            Longitude = locationA.Location.Longitude 
+                                        };
+
+                for(int j = i + 1; j < locations.Length; j++)
+                {
+                    var locationB = locations[j];
+
+                    var coordinatesB = new GeoCoordinate
+                    {
+                        Latitude = locationB.Location.Latitude,
+                        Longitude = locationB.Location.Longitude
+                    };
+
+                    
+                    if (coordinatesA.GetDistanceTo(coordinatesB) > distance)
+                    {
+                        distance = coordinatesA.GetDistanceTo(coordinatesB);
+                        tacoBell1 = locationA;
+                        tacoBell2 = locationB;
+                    }
+                }
+            }
+            logger.LogInfo($"The 2 Taco Bells that are furthest away from one another are {tacoBell1.Name} and {tacoBell2.Name}");
         }
     }
 }
